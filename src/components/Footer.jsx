@@ -55,7 +55,10 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
-          <p>2024 Video Splitter Pro. All rights reserved.</p>
+          <p>&copy; 2026 Video Splitter Pro. All rights reserved.</p>
+          <p className="flex items-center gap-1">
+            Inspired by Gemini Video Editing capabilities for fast 10-second cuts.
+          </p>
           <p className="flex items-center gap-1">
             Made with <Heart className="w-3 h-3 text-rose-500" /> for privacy
           </p>
