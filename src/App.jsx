@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Scissors, ShieldCheck, Film, Layers } from 'lucide-react';
+import { Scissors, ShieldCheck, Film, Layers, FileArchive } from 'lucide-react';
 import Uploader from './components/Uploader';
 import ProgressBar from './components/ProgressBar';
 import PartsGrid from './components/PartsGrid';
@@ -7,7 +7,7 @@ import FeaturesSection from './components/FeaturesSection';
 import PrivacySection from './components/PrivacySection';
 import StatsBar from './components/StatsBar';
 import Footer from './components/Footer';
-import { loadFFmpeg, splitVideo, extractFrames } from './utils/ffmpeg';
+import { loadFFmpeg, splitVideo, extractFrames, compressVideo } from './utils/ffmpeg';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
@@ -55,7 +55,7 @@ function App() {
             setSegments(prev => [...prev, newSegment].sort((a, b) => a.partNumber - b.partNumber));
           }
         );
-      } else {
+      } else if (mode === 'frames') {
         setStatus('Extracting frames from video (1 frame per second)...');
         await extractFrames(
           selectedFile,
@@ -63,6 +63,16 @@ function App() {
           (prog) => setProgress(prog),
           (newFrame) => {
             setSegments(prev => [...prev, newFrame].sort((a, b) => a.partNumber - b.partNumber));
+          }
+        );
+      } else if (mode === 'compress') {
+        setStatus('Compressing video (this may take a while)...');
+        await compressVideo(
+          selectedFile,
+          ffmpegInstance,
+          (prog) => setProgress(prog),
+          (result) => {
+            setSegments([result]); // Only one result for compression
           }
         );
       }
@@ -149,7 +159,7 @@ function App() {
                 transition={{ delay: 0.15 }}
                 className="flex justify-center mb-8"
               >
-                <div className="bg-white/5 p-1 rounded-xl flex items-center gap-1 border border-white/10">
+                <div className="bg-white/5 p-1 rounded-xl flex flex-wrap justify-center items-center gap-1 border border-white/10">
                   <button
                     onClick={() => setMode('split')}
                     className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
@@ -170,7 +180,18 @@ function App() {
                     }`}
                   >
                     <Film className="w-4 h-4" />
-                    Extract Frames (Images)
+                    Extract Frames
+                  </button>
+                  <button
+                    onClick={() => setMode('compress')}
+                    className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      mode === 'compress' 
+                        ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25' 
+                        : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+                    }`}
+                  >
+                    <FileArchive className="w-4 h-4" />
+                    Compress Video
                   </button>
                 </div>
               </motion.div>

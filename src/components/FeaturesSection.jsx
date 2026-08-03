@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Shield, Download, Smartphone, Globe, HardDrive, Image } from 'lucide-react';
+import { Zap, Shield, Download, Smartphone, Globe, HardDrive, Image, FileArchive } from 'lucide-react';
 
 const features = [
   {
@@ -14,6 +14,12 @@ const features = [
     title: 'Extract Frames',
     description: 'Pull high-quality individual image frames directly from your video files instantly.',
     gradient: 'from-fuchsia-500 to-pink-600',
+  },
+  {
+    icon: FileArchive,
+    title: 'Video Compressor',
+    description: 'Reduce video file sizes dramatically with our built-in fast WebAssembly compressor.',
+    gradient: 'from-emerald-400 to-cyan-500',
   },
   {
     icon: Shield,

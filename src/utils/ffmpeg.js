@@ -204,3 +204,55 @@ export const extractFrames = async (file, ffmpegInstance, onProgress, onFrameCom
 
   return frames;
 };
+
+export const compressVideo = async (file, ffmpegInstance, onProgress, onComplete) => {
+  const inputFileName = 'input_video.mp4';
+  const outFileName = 'compressed_video.mp4';
+  
+  // Write the file to memory
+  await ffmpegInstance.writeFile(inputFileName, await fetchFile(file));
+
+  const progressHandler = ({ progress }) => {
+    // progress is 0 to 1 for the whole file
+    onProgress(Math.round(progress * 100));
+  };
+
+  ffmpegInstance.on('progress', progressHandler);
+
+  // Run ffmpeg command: compress video
+  // -vcodec libx264 -crf 28 (higher is more compressed, lower quality)
+  // -preset ultrafast (essential for wasm performance)
+  await ffmpegInstance.exec([
+    '-i', inputFileName,
+    '-vcodec', 'libx264',
+    '-crf', '28',
+    '-preset', 'ultrafast',
+    outFileName
+  ]);
+
+  ffmpegInstance.off('progress', progressHandler);
+
+  const fileData = await ffmpegInstance.readFile(outFileName);
+  const data = new Uint8Array(fileData);
+  
+  const blob = new Blob([data.buffer], { type: 'video/mp4' });
+  const url = URL.createObjectURL(blob);
+  
+  const resultInfo = {
+    partNumber: 1, // Just one part for the compressed video
+    blob,
+    url,
+    size: blob.size,
+    type: 'video'
+  };
+  
+  if (onComplete) {
+    onComplete(resultInfo);
+  }
+
+  // Cleanup
+  await ffmpegInstance.deleteFile(inputFileName);
+  await ffmpegInstance.deleteFile(outFileName);
+
+  return [resultInfo];
+};
