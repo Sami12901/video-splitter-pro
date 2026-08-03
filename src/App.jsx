@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Scissors, ShieldCheck } from 'lucide-react';
+import { Scissors, ShieldCheck, Film, Layers } from 'lucide-react';
 import Uploader from './components/Uploader';
 import ProgressBar from './components/ProgressBar';
 import PartsGrid from './components/PartsGrid';
@@ -7,10 +7,11 @@ import FeaturesSection from './components/FeaturesSection';
 import PrivacySection from './components/PrivacySection';
 import StatsBar from './components/StatsBar';
 import Footer from './components/Footer';
-import { loadFFmpeg, splitVideo } from './utils/ffmpeg';
+import { loadFFmpeg, splitVideo, extractFrames } from './utils/ffmpeg';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
+  const [mode, setMode] = useState('split'); // 'split' or 'frames'
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -44,15 +45,27 @@ function App() {
     }
 
     try {
-      setStatus('Splitting video into 10-second parts...');
-      await splitVideo(
-        selectedFile,
-        ffmpegInstance,
-        (prog) => setProgress(prog),
-        (newSegment) => {
-          setSegments(prev => [...prev, newSegment].sort((a, b) => a.partNumber - b.partNumber));
-        }
-      );
+      if (mode === 'split') {
+        setStatus('Splitting video into 10-second parts...');
+        await splitVideo(
+          selectedFile,
+          ffmpegInstance,
+          (prog) => setProgress(prog),
+          (newSegment) => {
+            setSegments(prev => [...prev, newSegment].sort((a, b) => a.partNumber - b.partNumber));
+          }
+        );
+      } else {
+        setStatus('Extracting frames from video (1 frame per second)...');
+        await extractFrames(
+          selectedFile,
+          ffmpegInstance,
+          (prog) => setProgress(prog),
+          (newFrame) => {
+            setSegments(prev => [...prev, newFrame].sort((a, b) => a.partNumber - b.partNumber));
+          }
+        );
+      }
       setStatus('Processing complete!');
       setProgress(100);
     } catch (err) {
@@ -125,9 +138,43 @@ function App() {
               transition={{ delay: 0.1 }}
               className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed"
             >
-              Divide any video into precise 10-second segments entirely within your browser. 
+              Divide any video into precise 10-second segments, or extract individual frames as images entirely within your browser. 
               No uploads, no accounts, no compromises on privacy.
             </motion.p>
+            
+            {!file && !isProcessing && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="flex justify-center mb-8"
+              >
+                <div className="bg-white/5 p-1 rounded-xl flex items-center gap-1 border border-white/10">
+                  <button
+                    onClick={() => setMode('split')}
+                    className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      mode === 'split' 
+                        ? 'bg-primary text-primary-foreground shadow-lg' 
+                        : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+                    }`}
+                  >
+                    <Layers className="w-4 h-4" />
+                    Split Video (10s parts)
+                  </button>
+                  <button
+                    onClick={() => setMode('frames')}
+                    className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      mode === 'frames' 
+                        ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/25' 
+                        : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+                    }`}
+                  >
+                    <Film className="w-4 h-4" />
+                    Extract Frames (Images)
+                  </button>
+                </div>
+              </motion.div>
+            )}
             
             <motion.div
               initial={{ opacity: 0 }}

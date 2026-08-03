@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Shield, Download, Smartphone, Globe, HardDrive } from 'lucide-react';
+import { Zap, Shield, Download, Smartphone, Globe, HardDrive, Image } from 'lucide-react';
 
 const features = [
   {
@@ -8,6 +8,12 @@ const features = [
     title: 'Lightning Fast',
     description: 'Stream-copy technology splits videos in seconds without re-encoding. No quality loss, no waiting.',
     gradient: 'from-amber-500 to-orange-600',
+  },
+  {
+    icon: Image,
+    title: 'Extract Frames',
+    description: 'Pull high-quality individual image frames directly from your video files instantly.',
+    gradient: 'from-fuchsia-500 to-pink-600',
   },
   {
     icon: Shield,

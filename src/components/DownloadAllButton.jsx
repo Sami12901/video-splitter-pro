@@ -13,7 +13,8 @@ export default function DownloadAllButton({ segments }) {
       
       segments.forEach(part => {
         // add to zip
-        zip.file(`part_${part.partNumber}.mp4`, part.blob);
+        const ext = part.type === 'image' ? 'png' : 'mp4';
+        zip.file(`part_${part.partNumber}.${ext}`, part.blob);
       });
 
       const content = await zip.generateAsync({ type: 'blob' });

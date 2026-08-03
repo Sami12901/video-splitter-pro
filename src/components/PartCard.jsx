@@ -7,7 +7,8 @@ export default function PartCard({ part, index }) {
   const handleDownload = () => {
     const a = document.createElement('a');
     a.href = part.url;
-    a.download = `part_${part.partNumber}.mp4`;
+    const ext = part.type === 'image' ? 'png' : 'mp4';
+    a.download = `part_${part.partNumber}.${ext}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -21,17 +22,27 @@ export default function PartCard({ part, index }) {
       className="glass-panel rounded-2xl overflow-hidden group flex flex-col"
     >
       <div className="relative aspect-video bg-black/50 overflow-hidden flex items-center justify-center">
-        <video 
-          src={part.url} 
-          className="w-full h-full object-contain"
-          controls
-          preload="metadata"
-        />
+        {part.type === 'image' ? (
+          <img 
+            src={part.url} 
+            alt={`Frame ${part.partNumber}`}
+            className="w-full h-full object-contain"
+          />
+        ) : (
+          <video 
+            src={part.url} 
+            className="w-full h-full object-contain"
+            controls
+            preload="metadata"
+          />
+        )}
       </div>
       <div className="p-5 flex-1 flex flex-col">
         <h4 className="text-xl font-bold mb-1">Part {part.partNumber}</h4>
         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-          <span className="bg-secondary px-2 py-1 rounded-md">{formatTime(part.duration)}</span>
+          {part.type !== 'image' && (
+            <span className="bg-secondary px-2 py-1 rounded-md">{formatTime(part.duration)}</span>
+          )}
           <span>{formatBytes(part.size)}</span>
         </div>
         
