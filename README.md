@@ -1,8 +1,8 @@
 # ✂️ Video Splitter Pro
 
-Hey there! Welcome to **Video Splitter Pro** — a completely free, fast, and 100% private web tool for chopping up your videos into clean 10-second segments.
+Hey there! Welcome to **Video Splitter Pro** — a completely free, fast, and 100% private web tool for chopping up your videos into clean 10-second segments or extracting individual frames as images!
 
-Whether you're prepping clips for social media, trying to bypass file size limits, or just organizing your footage, this tool gets the job done instantly right inside your browser. No sketchy server uploads, no waiting in queues, and absolutely no data tracking.
+Whether you're prepping clips for social media, trying to bypass file size limits, grabbing a specific frame for a thumbnail, or just organizing your footage, this tool gets the job done instantly right inside your browser. No sketchy server uploads, no waiting in queues, and absolutely no data tracking.
 
 🚀 **Try it live right now:** [https://sami12901.github.io/video-splitter-pro/](https://sami12901.github.io/video-splitter-pro/)
 
@@ -12,10 +12,11 @@ Whether you're prepping clips for social media, trying to bypass file size limit
 
 ## ✨ Why You'll Love It
 
+- **Dual Modes**: Choose between splitting your video into precise 10-second segments or extracting 1 high-quality image frame per second.
 - **100% Client-Side Processing**: Your videos never leave your computer or phone. All the heavy lifting happens locally in your browser using `ffmpeg.wasm`.
 - **Lightning Fast**: We use stream copying (`-c copy`) to segment your videos in the blink of an eye, without any re-encoding or quality loss.
-- **Progressive Reveal**: Watch your video parts magically appear one by one as they finish processing. No need to wait for the whole thing to finish!
-- **Bulk Export**: Download a single clip, or grab them all at once neatly packed in a ZIP file.
+- **Progressive Reveal**: Watch your video parts or image frames magically appear one by one as they finish processing. No need to wait for the whole thing to finish!
+- **Bulk Export**: Download a single clip or image, or grab them all at once neatly packed in a ZIP file.
 - **Sleek & Premium Design**: Enjoy a beautiful, glassmorphism-inspired dark theme with ultra-smooth animations (thanks to Framer Motion).
 - **Format Friendly**: Works perfectly with MP4, MOV, WEBM, and MKV files.
 
